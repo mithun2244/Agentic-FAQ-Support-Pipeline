@@ -1,0 +1,14 @@
+[theme]
+# Enterprise AI vibe: dark slate base with a professional emerald-green accent.
+base = "dark"
+primaryColor = "#10B981"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#1B2130"
+textColor = "#E6EAF1"
+font = "sans serif"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
