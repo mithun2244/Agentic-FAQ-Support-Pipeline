@@ -56,7 +56,7 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-question = st.chat_input("Ask a question about Codebasics courses...")
+question = st.chat_input("Ask a question about our courses...")
 
 if question:
     # Show and store the user's question
