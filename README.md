@@ -10,6 +10,40 @@ An unanswered question becomes a support ticket, an admin answers it from the po
 
 ![End-to-end demo: fallback ticketing and Admin Portal resolution](demo.gif)
 
+## 🏗️ Architecture
+
+Every question first checks the resolved-ticket store, then the RAG chain. If neither can answer, it escalates to a human — whose answer feeds back into the store so the next user is served instantly.
+
+```
+                          ┌───────────────────────────┐
+   User question ───────► │ 1. Resolved-ticket lookup  │ ── match ──► Answer ✅
+                          │    (SQLite, normalized)    │             (no LLM call)
+                          └────────────┬──────────────┘
+                                       │ no match
+                                       ▼
+                          ┌───────────────────────────┐
+                          │ 2. RAG chain (NVIDIA NIM)  │
+                          │  NVIDIAEmbeddings ─► FAISS  │ ── grounded ─► Answer ✅
+                          │  retriever ─► ChatNVIDIA    │
+                          │  (LLaMA 3.1 8B)            │
+                          └────────────┬──────────────┘
+                                       │ "I don't know"
+                                       ▼
+                          ┌───────────────────────────┐
+                          │ 3. Human-in-the-loop        │
+                          │  "Contact Customer Service" │
+                          │  ─► Pending ticket (SQLite) │
+                          └────────────┬──────────────┘
+                                       │
+                                       ▼
+                          ┌───────────────────────────┐
+                          │ 4. Admin Portal (sidebar)   │
+                          │  answers ticket ─► Answered │──┐
+                          └───────────────────────────┘  │
+                                       ▲                  │ feeds back into
+                                       └──────────────────┘ the ticket store (step 1)
+```
+
 ### 💬 Conversational RAG with human-in-the-loop fallback
 
 ![Chat UI showing the Contact Customer Service fallback button after an unanswered question](screenshot_fallback.png)
