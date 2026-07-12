@@ -2,7 +2,7 @@
 # NVIDIA_API_KEY must be set before importing the app (langchain_helper builds
 # the NVIDIA clients at import time); pytest fixtures also shadow their own
 # names in test signatures, which is the idiomatic pattern.
-# pylint: disable=wrong-import-position,redefined-outer-name,unused-argument,too-few-public-methods
+# pylint: disable=wrong-import-position,redefined-outer-name,unused-argument
 import os
 
 os.environ.setdefault("NVIDIA_API_KEY", "test-key-not-used")
