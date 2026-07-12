@@ -4,6 +4,12 @@
 
 An end-to-end LLM project that answers user FAQs from a company knowledge base using a Retrieval-Augmented Generation (RAG) architecture powered by **NVIDIA NIM** endpoints. The system exposes a Streamlit interface where users can ask questions and receive grounded answers sourced directly from the FAQ dataset — with a human-in-the-loop fallback so nothing goes unanswered.
 
+## 🎬 Demo
+
+An unanswered question becomes a support ticket, an admin answers it from the portal, and the **next** student who asks gets that answer automatically — no LLM call needed.
+
+![End-to-end demo: fallback ticketing and Admin Portal resolution](demo.gif)
+
 ### 💬 Conversational RAG with human-in-the-loop fallback
 
 ![Chat UI showing the Contact Customer Service fallback button after an unanswered question](screenshot_fallback.png)
