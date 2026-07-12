@@ -22,6 +22,9 @@ env/
 main.py
 .streamlit/
 
+# React frontend (separate app; not part of the API image)
+frontend/
+
 # Docs / media / notebooks
 README.md
 *.md
