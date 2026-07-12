@@ -1,0 +1,35 @@
+# Keep the build context small and secrets out of the image.
+
+# Secrets / local runtime state
+.env
+.env.example
+tickets.db
+streamlit.log
+
+# Version control / CI
+.git
+.github
+.gitignore
+
+# Python caches / envs
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Streamlit frontend (not part of the API image)
+main.py
+.streamlit/
+
+# Docs / media / notebooks
+README.md
+*.md
+*.ipynb
+demo.gif
+screenshot_*.png
+codebasics_q_and_a.png
+
+# Tooling
+.pylintrc
+.vscode/

@@ -7,7 +7,12 @@ pool of previously answered tickets.
 import os
 import sqlite3
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tickets.db")
+# Location of the SQLite store. Override with TICKETS_DB_PATH (e.g. to point at
+# a mounted volume in Docker); defaults next to this module.
+DB_PATH = os.environ.get(
+    "TICKETS_DB_PATH",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "tickets.db"),
+)
 
 
 def _connect():
