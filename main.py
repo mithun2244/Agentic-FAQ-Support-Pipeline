@@ -1,6 +1,8 @@
+"""Streamlit UI for the Agentic FAQ Support Pipeline: a NVIDIA NIM RAG chat
+assistant with a human-in-the-loop fallback ticketing system and admin portal."""
 import streamlit as st
-from langchain_helper import get_qa_chain, create_vector_db
 import db_helper
+from langchain_helper import get_qa_chain, create_vector_db
 
 ADMIN_PASSWORD = "admin123"  # demo only — replace with a real secret in production
 
@@ -40,6 +42,7 @@ def load_chain():
 
 
 def is_dont_know(text):
+    """Return True if the model's answer signals it could not answer."""
     t = text.lower()
     return "i don't know" in t or "i dont know" in t
 
@@ -81,6 +84,7 @@ with st.sidebar:
 
 # ============================ ADMIN DASHBOARD ============================
 def render_admin_dashboard():
+    """Render the admin view: list Pending tickets and let admins answer them."""
     st.subheader("🛠️ Admin Portal — Pending Tickets")
     pending = db_helper.get_pending_tickets()
     if not pending:
@@ -92,12 +96,12 @@ def render_admin_dashboard():
             st.markdown(f"**Question:** {t['question']}")
             if t.get("contact"):
                 st.caption(f"📇 Contact: {t['contact']}")
-            answer = st.text_area(
+            admin_answer = st.text_area(
                 "Your answer", key=f"answer_{t['id']}", placeholder="Type the resolution here..."
             )
             if st.button("Send Answer", key=f"send_{t['id']}", type="primary"):
-                if answer.strip():
-                    db_helper.answer_ticket(t["id"], answer)
+                if admin_answer.strip():
+                    db_helper.answer_ticket(t["id"], admin_answer)
                     st.success(f"Ticket #{t['id']} answered and marked resolved.")
                     st.rerun()
                 else:
@@ -141,7 +145,7 @@ if question:
                 response = chain.invoke(question)
             answer = response["result"]
             dont_know = is_dont_know(answer)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             answer = (
                 "I couldn't answer that. Make sure the knowledgebase has been built "
                 f"(use the sidebar) and the NVIDIA API key is configured.\n\n`{e}`"

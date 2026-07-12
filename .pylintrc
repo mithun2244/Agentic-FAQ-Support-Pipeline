@@ -1,0 +1,17 @@
+[MESSAGES CONTROL]
+# import-error: the CI job installs only pylint, not the app's runtime
+#   dependencies, so third-party imports (streamlit, langchain_*) can't be
+#   resolved during static analysis.
+# no-name-in-module: RetrievalQA is re-exported dynamically by
+#   langchain_classic, which pylint's static analysis cannot follow (verified
+#   to import correctly at runtime).
+# invalid-name: this is a top-level Streamlit script, so short lowercase
+#   module-level variables (answer, dont_know, ...) are idiomatic, not constants.
+disable=import-error,
+        no-name-in-module,
+        invalid-name
+
+[FORMAT]
+# Allow the long FAQ prompt-template string lines without reflowing them
+# (reflowing would change the whitespace sent to the LLM).
+max-line-length=120
