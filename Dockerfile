@@ -10,8 +10,9 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 
 # Install dependencies first so this layer is cached until requirements change.
-COPY requirements.txt requirements-api.txt ./
-RUN pip install --no-cache-dir -r requirements.txt -r requirements-api.txt
+# requirements-api.txt pulls in requirements-core.txt via -r (no Streamlit).
+COPY requirements-core.txt requirements-api.txt ./
+RUN pip install --no-cache-dir -r requirements-api.txt
 
 # Copy only what the API needs (see .dockerignore for what's excluded).
 COPY api/ ./api/
