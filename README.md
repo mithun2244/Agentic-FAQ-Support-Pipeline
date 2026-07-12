@@ -112,6 +112,57 @@ streamlit run main.py
 
 - Now you are ready to ask questions. Type your question in the Question box and hit Enter.
 
+## 🚀 Backend API (FastAPI)
+
+The core RAG and ticketing logic is also exposed as a standalone **FastAPI** service (in `api/`), decoupled from Streamlit so it can back any frontend (e.g. a React app).
+
+### Run with Docker (recommended)
+
+Requires a local `.env` containing your `NVIDIA_API_KEY` (see `.env.example`), then:
+
+```bash
+docker compose up --build
+```
+
+The API is served at **http://localhost:8000**, with interactive **Swagger UI docs at http://localhost:8000/docs** (and ReDoc at `/redoc`). The SQLite ticket store is persisted on a named Docker volume.
+
+### Run without Docker
+
+```bash
+pip install -r requirements-api.txt
+uvicorn api.main:app --reload      # docs at http://localhost:8000/docs
+```
+
+### Endpoints
+
+| Method & Path | Description |
+| --- | --- |
+| `POST /ask` | Answer a question — checks resolved tickets first, then the NVIDIA NIM RAG chain. Returns `source` (`ticket` \| `rag`) and `resolved` (False signals the frontend to offer the ticket fallback). |
+| `POST /tickets` | File a support ticket (used by the "Contact Customer Service" fallback). |
+| `GET /tickets/pending` | List all pending tickets. |
+| `POST /tickets/answer` | Admin answers a ticket (`404` if the id is unknown). |
+| `GET /health` | Liveness probe. |
+
+Example request:
+
+```bash
+curl -X POST http://localhost:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Do you provide any virtual internship?"}'
+```
+
+### Configuration
+
+- `NVIDIA_API_KEY` — **required** (injected from `.env` by Docker Compose).
+- `TICKETS_DB_PATH` — optional; path to the SQLite store (Compose points this at the mounted volume).
+
+### Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## Sample Questions
 
 - Do you guys provide internship and also do you offer EMI payments?
@@ -125,5 +176,8 @@ streamlit run main.py
 - `main.py`: The main Streamlit application script (chat UI, fallback flow, admin portal).
 - `langchain_helper.py`: LangChain + NVIDIA NIM code that builds the FAISS index and RetrievalQA chain.
 - `db_helper.py`: SQLite manager for the human-in-the-loop `tickets` store.
-- `requirements.txt`: A list of required Python packages for the project.
+- `api/`: FastAPI backend — `main.py` (app), `routers/` (ask + tickets), `schemas.py`, `deps.py`.
+- `Dockerfile` / `docker-compose.yml`: containerized backend, served on port 8000.
+- `tests/`: pytest suite for the API.
+- `requirements.txt` / `requirements-core.txt` / `requirements-api.txt` / `requirements-dev.txt`: split dependency sets (Streamlit, shared core, API, and dev/test).
 - `.env`: Configuration file for storing your NVIDIA API key (not committed — see `.env.example`).

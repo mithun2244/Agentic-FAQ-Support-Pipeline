@@ -1,0 +1,20 @@
+# Spin up the FastAPI backend:  docker compose up --build
+# Requires a local .env containing NVIDIA_API_KEY (see .env.example).
+services:
+  api:
+    build: .
+    image: agentic-faq-api:latest
+    container_name: agentic-faq-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Persist the SQLite ticket store on the mounted volume.
+      TICKETS_DB_PATH: /data/tickets.db
+    volumes:
+      - ticket-data:/data
+    restart: unless-stopped
+
+volumes:
+  ticket-data:

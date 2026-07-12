@@ -1,0 +1,9 @@
+# Shared core: the RAG stack used by BOTH the Streamlit app and the FastAPI
+# backend. Requires Python 3.10+.
+langchain==1.3.11
+langchain-core==1.4.8
+langchain-community==0.4.2
+langchain-classic==1.0.8
+langchain-nvidia-ai-endpoints==1.4.2
+faiss-cpu==1.14.3
+python-dotenv==1.2.2

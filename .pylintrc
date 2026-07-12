@@ -7,9 +7,12 @@
 #   to import correctly at runtime).
 # invalid-name: this is a top-level Streamlit script, so short lowercase
 #   module-level variables (answer, dont_know, ...) are idiomatic, not constants.
+# too-few-public-methods: Pydantic schema models are method-less data classes;
+#   pylint also can't see BaseModel's methods when deps aren't installed in CI.
 disable=import-error,
         no-name-in-module,
-        invalid-name
+        invalid-name,
+        too-few-public-methods
 
 [FORMAT]
 # Allow the long FAQ prompt-template string lines without reflowing them
