@@ -1,8 +1,20 @@
 # Agentic FAQ Support Pipeline
 
-An end-to-end LLM project that answers user FAQs from a company knowledge base using a Retrieval-Augmented Generation (RAG) architecture powered by **NVIDIA NIM** endpoints. The system exposes a Streamlit interface where users can ask questions and receive grounded answers sourced directly from the FAQ dataset.
+[![Pylint](https://github.com/mithun2244/Agentic-FAQ-Support-Pipeline/actions/workflows/pylint.yml/badge.svg)](https://github.com/mithun2244/Agentic-FAQ-Support-Pipeline/actions/workflows/pylint.yml)
 
-![](codebasics_q_and_a.png)
+An end-to-end LLM project that answers user FAQs from a company knowledge base using a Retrieval-Augmented Generation (RAG) architecture powered by **NVIDIA NIM** endpoints. The system exposes a Streamlit interface where users can ask questions and receive grounded answers sourced directly from the FAQ dataset — with a human-in-the-loop fallback so nothing goes unanswered.
+
+### 💬 Conversational RAG with human-in-the-loop fallback
+
+![Chat UI showing the Contact Customer Service fallback button after an unanswered question](screenshot_fallback.png)
+
+When the model can't answer from the knowledge base, it replies "I don't know" and offers a **📩 Contact Customer Service** button that files a support ticket instead of leaving the user stuck.
+
+### 🛠️ Admin Portal
+
+![Admin Portal in the sidebar showing a pending ticket with an answer box](screenshot_admin.png)
+
+A password-protected **Admin Portal** in the sidebar lets support staff review pending tickets and respond. Once answered, the same question is resolved automatically from the ticket store for any future user — bypassing the LLM entirely.
 
 ## Project Highlights
 
@@ -70,7 +82,8 @@ streamlit run main.py
 
 ## Project Structure
 
-- `main.py`: The main Streamlit application script.
-- `langchain_helper.py`: This has all the langchain / NVIDIA NIM code.
+- `main.py`: The main Streamlit application script (chat UI, fallback flow, admin portal).
+- `langchain_helper.py`: LangChain + NVIDIA NIM code that builds the FAISS index and RetrievalQA chain.
+- `db_helper.py`: SQLite manager for the human-in-the-loop `tickets` store.
 - `requirements.txt`: A list of required Python packages for the project.
 - `.env`: Configuration file for storing your NVIDIA API key (not committed — see `.env.example`).
