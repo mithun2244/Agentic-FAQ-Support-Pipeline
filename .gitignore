@@ -12,6 +12,9 @@ env/
 # Streamlit runtime
 streamlit.log
 
+# SQLite ticket store (local runtime state)
+tickets.db
+
 # OS / editor
 .DS_Store
 .vscode/
