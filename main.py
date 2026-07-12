@@ -33,6 +33,7 @@ st.session_state.setdefault("fallback_question", None)
 st.session_state.setdefault("show_contact_form", False)
 st.session_state.setdefault("ticket_submitted", False)
 st.session_state.setdefault("admin_authed", False)
+st.session_state.setdefault("answered_ticket_id", None)
 
 
 @st.cache_resource(show_spinner=False)
@@ -86,6 +87,12 @@ with st.sidebar:
 def render_admin_dashboard():
     """Render the admin view: list Pending tickets and let admins answer them."""
     st.subheader("🛠️ Admin Portal — Pending Tickets")
+
+    # Confirmation survives the st.rerun() triggered by answering a ticket.
+    answered_id = st.session_state.pop("answered_ticket_id", None)
+    if answered_id is not None:
+        st.success(f"Ticket #{answered_id} answered and marked resolved.")
+
     pending = db_helper.get_pending_tickets()
     if not pending:
         st.info("No pending tickets right now. 🎉")
@@ -102,7 +109,7 @@ def render_admin_dashboard():
             if st.button("Send Answer", key=f"send_{t['id']}", type="primary"):
                 if admin_answer.strip():
                     db_helper.answer_ticket(t["id"], admin_answer)
-                    st.success(f"Ticket #{t['id']} answered and marked resolved.")
+                    st.session_state.answered_ticket_id = t["id"]
                     st.rerun()
                 else:
                     st.warning("Please type an answer before sending.")
