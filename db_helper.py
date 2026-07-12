@@ -46,6 +46,14 @@ def create_ticket(question, contact=None):
         return cur.lastrowid
 
 
+def get_ticket(ticket_id):
+    """Return a single ticket as a dict, or None if it does not exist."""
+    init_db()
+    with _connect() as conn:
+        row = conn.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,)).fetchone()
+    return dict(row) if row else None
+
+
 def get_pending_tickets():
     """Return all Pending tickets, newest first, as a list of dicts."""
     init_db()
