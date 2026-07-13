@@ -61,20 +61,43 @@ export default function AdminDashboard() {
 
   if (!authed) {
     return (
-      <form onSubmit={handleLogin} className="mx-auto mt-12 max-w-sm rounded-xl border border-slate-800 bg-slate-900 p-6">
-        <h2 className="mb-1 text-lg font-semibold text-slate-100">🔐 Admin Portal</h2>
-        <p className="mb-4 text-sm text-slate-400">Enter the admin password to manage tickets.</p>
+      <form
+        onSubmit={handleLogin}
+        className="mx-auto mt-12 max-w-sm animate-fade-in-up rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl"
+      >
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-surface-container-high">
+            <span className="material-symbols-outlined fill-icon text-[20px] text-primary">
+              shield_person
+            </span>
+          </div>
+          <div>
+            <h2 className="font-headline text-[18px] font-medium tracking-tight text-on-surface">
+              Admin Portal
+            </h2>
+            <p className="text-body-sm text-on-surface-variant">Sign in to manage escalations.</p>
+          </div>
+        </div>
+
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="mb-3 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+          aria-label="Admin password"
+          className="mb-3 w-full rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-body-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:outline-none"
         />
-        {error && <p className="mb-3 text-sm text-red-400">{error}</p>}
+
+        {error && (
+          <p className="mb-3 flex items-center gap-2 text-body-sm text-error">
+            <span className="material-symbols-outlined fill-icon text-[16px]">warning</span>
+            {error}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+          className="w-full rounded-full bg-primary px-5 py-2.5 text-body-sm font-medium text-on-primary transition-all hover:bg-primary-fixed hover:glow-primary active:scale-95"
         >
           Login
         </button>
@@ -83,64 +106,117 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-gutter">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-100">🛠️ Pending Tickets</h2>
+        <div>
+          <h2 className="font-headline text-headline-md tracking-tight text-on-surface">
+            Escalations
+          </h2>
+          <p className="font-label text-label-caps text-on-surface-variant">
+            {tickets.length} pending
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => void load()}
-          className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800"
+          disabled={loading}
+          className="flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-body-sm text-on-surface-variant transition-colors hover:border-primary/50 hover:text-primary disabled:opacity-40"
         >
+          <span className="material-symbols-outlined text-[18px]">refresh</span>
           Refresh
         </button>
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-emerald-800 bg-emerald-950/50 px-4 py-2 text-sm text-emerald-300">
-          {notice}
-        </div>
-      )}
-      {error && (
-        <div className="rounded-lg border border-red-800 bg-red-950/50 px-4 py-2 text-sm text-red-300">
-          {error}
+        <div className="animate-fade-in-up rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 backdrop-blur-xl">
+          <div className="flex items-start gap-3">
+            <span className="material-symbols-outlined fill-icon text-[20px] text-primary">
+              task_alt
+            </span>
+            <p className="text-body-sm text-primary">{notice}</p>
+          </div>
         </div>
       )}
 
-      {loading && <p className="text-sm text-slate-500">Loading…</p>}
+      {error && (
+        <div className="animate-fade-in-up rounded-xl border border-error/20 bg-error/5 px-5 py-4 backdrop-blur-xl">
+          <div className="flex items-start gap-3">
+            <span className="material-symbols-outlined fill-icon text-[20px] text-error">
+              warning
+            </span>
+            <p className="text-body-sm text-error">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {loading && (
+        <div className="flex items-center gap-2 text-body-sm text-on-surface-variant">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+          Loading tickets…
+        </div>
+      )}
 
       {!loading && tickets.length === 0 && (
-        <p className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-6 text-center text-sm text-slate-400">
-          No pending tickets right now. 🎉
-        </p>
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-12 text-center backdrop-blur-xl">
+          <span className="material-symbols-outlined mb-2 block text-[32px] text-primary">
+            inbox
+          </span>
+          <p className="text-body-md text-on-surface">Queue is clear</p>
+          <p className="text-body-sm text-on-surface-variant">No pending tickets right now.</p>
+        </div>
       )}
 
       {tickets.map((ticket) => (
-        <div key={ticket.id} className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-          <div className="mb-1 flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-200">Ticket #{ticket.id}</span>
+        <div
+          key={ticket.id}
+          className="animate-fade-in-up rounded-xl border border-white/[0.08] bg-white/[0.03] p-gutter backdrop-blur-xl"
+        >
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="font-label text-mono-data text-on-surface-variant">
+                #{ticket.id}
+              </span>
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-label text-label-caps text-primary">
+                {ticket.status}
+              </span>
+            </div>
             {ticket.created_at && (
-              <span className="text-xs text-slate-500">{ticket.created_at}</span>
+              <span className="font-label text-mono-data text-on-surface-variant/50">
+                {ticket.created_at}
+              </span>
             )}
           </div>
-          <p className="mb-1 text-sm text-slate-100">
-            <span className="font-medium text-slate-400">Question:</span> {ticket.question}
-          </p>
+
+          <p className="mb-3 text-body-md leading-relaxed text-on-surface">{ticket.question}</p>
+
           {ticket.contact && (
-            <p className="mb-2 text-xs text-slate-500">📇 Contact: {ticket.contact}</p>
+            <div className="mb-3 flex items-center gap-2 rounded-md border border-white/5 bg-black/20 px-3 py-2">
+              <span className="material-symbols-outlined text-[18px] text-on-surface-variant">
+                alternate_email
+              </span>
+              <span className="font-label text-mono-data text-on-surface-variant">
+                {ticket.contact}
+              </span>
+            </div>
           )}
+
           <textarea
             value={answers[ticket.id] ?? ''}
             onChange={(e) => setAnswers((prev) => ({ ...prev, [ticket.id]: e.target.value }))}
             placeholder="Type the resolution here..."
             rows={3}
-            className="mb-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+            aria-label={`Answer for ticket ${ticket.id}`}
+            className="mb-3 w-full resize-y rounded-md border border-white/10 bg-white/[0.04] px-4 py-3 text-body-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:outline-none"
           />
+
           <button
             type="button"
             onClick={() => void handleAnswer(ticket.id)}
-            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+            disabled={!(answers[ticket.id] ?? '').trim()}
+            className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-body-sm font-medium text-on-primary transition-all hover:bg-primary-fixed hover:glow-primary active:scale-95 disabled:opacity-40 disabled:hover:bg-primary"
           >
-            Send Answer
+            <span className="material-symbols-outlined fill-icon text-[18px]">send</span>
+            Send answer
           </button>
         </div>
       ))}
