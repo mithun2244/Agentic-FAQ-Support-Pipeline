@@ -1,0 +1,18 @@
+# Language statistics (GitHub Linguist)
+#
+# This is a Python project: the LangChain RAG pipeline, the FastAPI service and
+# the ticketing store are the substance of the repo. The React app in frontend/
+# is a self-contained client for that API, and its TypeScript/CSS/HTML would
+# otherwise outweigh the Python and be reported as the repo's main language.
+#
+# Marking it vendored excludes it from the language breakdown. The code is
+# still tracked, diffed and reviewed as normal.
+frontend/** linguist-vendored
+
+# Build output and dependency lockfiles are machine-generated. (dist/ is
+# gitignored today; the rule keeps the stats correct if that ever changes.)
+frontend/dist/** linguist-generated
+frontend/package-lock.json linguist-generated
+
+# Prebuilt FAISS vector store — binary artifacts, not source.
+faiss_index/** binary linguist-vendored
